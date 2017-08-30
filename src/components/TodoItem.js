@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class TodoItem extends Component {
 
@@ -30,6 +31,16 @@ class TodoItem extends Component {
             </tr>
         );
     }
+}
+
+TodoItem.propTypes = {
+    todo: PropTypes.shape({
+        id: PropTypes.number,
+        title: PropTypes.string,
+        status: PropTypes.bool
+    }),
+    deleteTodo: PropTypes.func,
+    changeStatus: PropTypes.func
 }
 
 export default TodoItem;
