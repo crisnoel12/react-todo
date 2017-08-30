@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 
 class TodoItem extends Component {
 
-    constructor() {
-        super();
-        this.deleteTodo = this.deleteTodo.bind(this);
-        this.changeStatus = this.changeStatus.bind(this);
-    }
-
     deleteTodo(id) {
         this.props.deleteTodo(id);
     }
