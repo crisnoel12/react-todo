@@ -1,0 +1,39 @@
+.todos h2 {
+    margin-top: 40px;
+}
+
+form {
+    background-color: silver;
+    padding: 20px;
+}
+
+.todos td {
+    padding: 20px;
+}
+
+.back-btn {
+    padding: 10px;
+    background-color: silver;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.delete-btn {
+    color: red !important;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-left: 8px;
+}
+
+.delete-btn:hover, input[name="add"]:hover, input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+input[type=checkbox] {
+    width: 17px;
+    height: 17px;
+}
+
+.complete {
+    text-decoration: line-through;
+}
