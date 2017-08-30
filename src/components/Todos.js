@@ -14,10 +14,6 @@ class Todos extends Component {
         }
     }
 
-    lastId() {
-        return Math.max.apply(null, this.state.todos.map(x => x.id)); // return last todo id
-    }
-
     reorderTodos() {
         let orderedTodos = this.state.todos.sort((x, y) => {
             return x.status - y.status || y.id - x.id; // reorder todos by incomplete first and then by todo creation
@@ -27,7 +23,7 @@ class Todos extends Component {
 
     handleAddTodo(e) {
         e.preventDefault();
-        let id = this.lastId();
+        let id = Math.max.apply(null, this.state.todos.map(x => x.id)); // return last todo id
         let title = this.refs.title.value.trim();
         if (title !== "") {
             let newTodo = { id: id + 1, title: title, status: false }
