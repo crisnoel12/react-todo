@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 class TodoItem extends Component {
 
-    deleteTodo(id) {
+    deleteTodo = (id) => {
         this.props.deleteTodo(id);
     }
 
-    changeStatus(status, id) {
+    changeStatus = (status, id) => {
         this.props.changeStatus(status, id);
     }
 
