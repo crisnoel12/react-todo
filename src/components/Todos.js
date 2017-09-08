@@ -16,7 +16,7 @@ class Todos extends Component {
 
     reorderTodos = () => {
         let orderedTodos = this.state.todos.sort((x, y) => {
-            return x.status - y.status || y.id - x.id; // reorder todos by incomplete first and then by todo creation
+            return x.status - y.status || y.creation_date - x.creation_date; // reorder todos by incomplete first and then by todo creation
         });
         this.setState({ todos: orderedTodos });
     }
