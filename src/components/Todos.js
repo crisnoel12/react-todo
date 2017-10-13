@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import todosMock from '../mock/todos';
+import axios from 'axios';
 import TodoItem from './TodoItem';
 import './styles/Todos.css';
 
@@ -10,29 +10,33 @@ class Todos extends Component {
     constructor() {
         super();
         this.state = {
-            todos: todosMock
+            todos: []
         }
+        this.todoApiUrl = 'http://localhost:8080/api/todos/';
     }
 
     reorderTodos = () => {
         let orderedTodos = this.state.todos.sort((x, y) => {
-            return x.status - y.status || y.creation_date - x.creation_date; // reorder todos by incomplete first and then by todo creation
+            return x.status - y.status || Date.parse(y.creation_date) - Date.parse(x.creation_date); // reorder todos by incomplete first and then by todo creation
         });
         this.setState({ todos: orderedTodos });
     }
 
     handleAddTodo = (e) => {
         e.preventDefault();
-        let id = Math.max.apply(null, this.state.todos.map(x => x.id)); // return last todo id
+        let todos = this.state.todos;
         let title = this.refs.title.value.trim();
         if (title !== "") {
-            let newTodo = { id: id + 1, title: title, status: false }
-            let todos = this.state.todos;
-            todos.unshift(newTodo);
-            this.setState({
-                todos: todos
-            });
-            this.refs.title.value = ""; // reset input field to empty
+            axios.post(this.todoApiUrl, { title: title })
+                .then( (res) => {
+                    let newTodo = res.data.todo;
+                    todos.unshift(newTodo);
+                    this.setState({ todos: todos })
+                    this.refs.title.value = ""; // reset input field to empty
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         } else {
             alert("You can't enter an empty todo!");
         }
@@ -41,27 +45,49 @@ class Todos extends Component {
 
     handleDeleteTodo = (id) => {
         let todos = this.state.todos;
-        let index = todos.findIndex(x => x.id === id);
-        todos.splice(index, 1);
-        this.setState({ todos: todos });
+        let todo = todos.find(x => x._id === id);
+        let index = todos.findIndex(x => x._id === id);
+        axios.delete(this.todoApiUrl + todo._id)
+            .then( (res) => {
+                todos.splice(index, 1);
+                this.setState({ todos: todos });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     handleStatusChange = (status, id) => {
         let todos = this.state.todos;
-        let todo = todos.find(x => x.id === id);
+        let todo = todos.find(x => x._id === id);
         todo.status = !todo.status; // toggle todo status
-        this.reorderTodos();
+        axios.put(this.todoApiUrl + todo._id, { status: todo.status })
+            .then((res) => {
+                this.reorderTodos();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    componentWillMount() {
-        this.reorderTodos(); // reorderTodos before App component mounts
+    componentDidMount() {
+        axios.get(this.todoApiUrl)
+            .then((res) => {
+                this.setState({
+                    todos: res.data
+                });
+                this.reorderTodos();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     render() {
         let todoItems = this.state.todos.map((todo, i) => {
             // create TodoItem component for each todo
             return (
-                <TodoItem key={todo.id} todo={todo} deleteTodo={this.handleDeleteTodo} changeStatus={this.handleStatusChange} />
+                <TodoItem key={todo._id} todo={todo} deleteTodo={this.handleDeleteTodo} changeStatus={this.handleStatusChange} />
             );
         });
         return (
