@@ -12,7 +12,7 @@ class TodoItem extends Component {
     }
 
     render() {
-        let id = this.props.todo.id;
+        let id = this.props.todo._id;
         let title = this.props.todo.title;
         let status = this.props.todo.status;
         return (
